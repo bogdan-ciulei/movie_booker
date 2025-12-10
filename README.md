@@ -43,8 +43,8 @@ When built, it will create 3 binaries :
    	Use Cmake and Conan 2  
 	Similar steps with Windows except that you don't need to replace any files.  
 	Run  
-		conan install . --output-folder=build --build=missing  
-		cd build  
-		cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release  
-		cmake --build .  
+>		conan install . --output-folder=build --build=missing  
+>		cd build  
+>		cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release  
+>		cmake --build .  
 		
