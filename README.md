@@ -3,14 +3,15 @@ This project is a ( test project ) backend service that will manage a list of th
 It uses Boost.Asio for the network code.
 
 When built, it will create 3 binaries : 
-- movie_booking  ( main service  - use with a json containing the movies description )
+- movie_booker  ( main service  - use with a json containing the movies description )
 - movie_booker_client ( interactive command line client )
-- tests
+- movie_booker_tests
 
 ## Dependencies:
-- CMake ( Linux )
+- CMake
 - Conan 2 Package Manager
 - Visual Studio 2022 ( Windows )
+- gcc or other modern compiler ( Linux )
 - Boost.Asio ( configured with conanfile.txt )
 - Gtest ( for tests, configured within conanfile.txt )
 - Rapidjson ( for loading a list of movies from a json )
@@ -48,3 +49,14 @@ When built, it will create 3 binaries :
 >		cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release  
 >		cmake --build .  
 		
+## Code description  
+
+IMovieBooker.hpp - interface for a bookings manager  
+MovieBooker.cpp and MovieBooker.hpp  - actual implementation of that interface  
+AsioServer.cpp and AsioServer.hpp - service network server , uses Boost.Asio to create an async TCP server  
+MovieBookerMain.cpp - main for the service, also code to populate movies from a json file  
+AsioClient.cpp and AsioClient.hpp - network TCP client using Boost.Asio , synchronous  
+movie_booker_client.cpp - command line client main  
+tests.cpp - gtest tests  
+
+	
