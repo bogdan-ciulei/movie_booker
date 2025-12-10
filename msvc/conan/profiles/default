@@ -1,0 +1,16 @@
+[settings]
+os=Windows
+arch=x86_64
+compiler=msvc
+compiler.version=194
+compiler.runtime=dynamic
+compiler.cppstd=17
+
+build_type=Release
+
+[conf]
+tools.cmake.cmaketoolchain:generator=Ninja
+tools.microsoft.msbuild:vs_version=17
+tools.microsoft.msbuild:vstoolset=143
+tools.microsoft.msbuild:windows_sdk_version=10.0.22621.0
+tools.microsoft.msbuild:installation_path="C:/Program Files/Microsoft Visual Studio/2022/Community"

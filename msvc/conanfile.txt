@@ -3,9 +3,12 @@ gtest/1.14.0
 boost/1.89.0
 rapidjson/cci.20230929
 
+#[tool_requires]
+#cmake/3.29.0
+
 [generators]
-CMakeDeps
-CMakeToolchain
+MSBuildDeps
+MSBuildToolchain
 
 
 [options]

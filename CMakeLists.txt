@@ -30,18 +30,18 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # ======================================================================
 # server executable
 # ======================================================================
-add_executable(movie_booker_server
+add_executable(movie_booker
     src/MovieBookerMain.cpp
     src/AsioServer.cpp
     src/MovieBooker.cpp
 )
 
-target_link_libraries(movie_booker_server
+target_link_libraries(movie_booker
     PRIVATE Boost::boost
     PRIVATE Boost::system
 )
 
-target_include_directories(movie_booker_server PRIVATE ${RapidJSON_INCLUDE_DIRS})
+target_include_directories(movie_booker PRIVATE ${RapidJSON_INCLUDE_DIRS})
 
 # ======================================================================
 # client executable
@@ -61,21 +61,21 @@ target_include_directories(movie_booker_client PRIVATE ${RapidJSON_INCLUDE_DIRS}
 # ======================================================================
 # Tests
 # ======================================================================
-add_executable(movie_backend_tests
+add_executable(movie_booker_tests
     tests/tests.cpp
 )
 
-target_link_libraries(movie_backend_tests
+target_link_libraries(movie_booker_tests
     PRIVATE GTest::gtest
     PRIVATE GTest::gtest_main
     PRIVATE Boost::boost
     PRIVATE Boost::system
 )
 
-target_include_directories(movie_backend_tests PRIVATE ${RapidJSON_INCLUDE_DIRS})
+target_include_directories(movie_booker_tests PRIVATE ${RapidJSON_INCLUDE_DIRS})
 
 include(GoogleTest)
-gtest_discover_tests(movie_backend_tests)
+gtest_discover_tests(movie_booker_tests)
 
 # ======================================================================
 # Status message

@@ -41,4 +41,8 @@
 *.dwo
 
 # output
-build/*
+build/**
+
+# user files
+*.user
+
