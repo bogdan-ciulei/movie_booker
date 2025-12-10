@@ -29,7 +29,8 @@ When built, it will create 3 binaries :
 
 ## Building:
 1) Windows:  
-   Install Conan 2 Package Manager https://docs.conan.io/2/index.html  
+   Install Conan 2 Package Manager https://docs.conan.io/2/index.html
+   Install Cmake ( required to build Boost.Asio land gtest ibraries )
    Copy conanfile.txt from msvc/ to the root of the project ( this will change the build system to MSBuild ).  
    Run  
 >		conan profile detect -f  
