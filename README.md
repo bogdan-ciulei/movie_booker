@@ -33,7 +33,7 @@ When built, it will create 3 binaries :
    Copy conanfile.txt from msvc/ to the root of the project ( this will change the build system to MSBuild ).  
    Run  
 >		conan profile detect -f  
-   This should autodetect your system configuration succesfully. If it fails and compilation fails, replace the %YSERPROFILE%\.conan\profiles\default with the one from msvc\conan\profiles **making sure to edit everything according to your machine configuration**.  
+   This should autodetect your system configuration succesfully. If it fails and compilation fails, replace the %USERPROFILE%\.conan\profiles\default with the one from msvc\conan\profiles **making sure to edit everything according to your machine configuration**.  
    Run  
 >		conan install . -s build_type=Debug --build=missing -of build\x64\debug\props  
 >		conan install . -s build_type=Release --build=missing -of build\x64\release\props  
