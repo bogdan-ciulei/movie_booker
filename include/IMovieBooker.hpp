@@ -46,17 +46,19 @@ public:
     /**
      * @brief Get a list of free seat indices for a theater.
      * @param theater The theater name to query.
-     * @return Vector of 1-based seat indices that are free.
+     * @param movie The movie name to query.
+     * @return 1 based bool vector of seat indices that are free.
      */
-    virtual std::vector<unsigned int> GetFreeSeats(const std::string& theater) = 0;
+    virtual std::vector<unsigned int> GetFreeSeats(const std::string& theater, const std::string& movie) = 0;
 
     /**
      * @brief Try to book the specified seats in a theater.
      * @param theater Theater name.
-     * @param seatIds Vector of 1-based seat indices to book.
+     * @param movie Movie name.
+     * @param seatIds 1 based vector of seat indices to book.
      * @return true if the seats were successfully booked, false otherwise.
      */
-    virtual bool BookSeats(const std::string& theater, const std::vector<unsigned int>& seatIds) = 0;
+    virtual bool BookSeats(const std::string& theater, const std::string& movie, const std::vector<unsigned int>& seatIds) = 0;
 
     /**
      * @brief Return true if the theater exists in the system.

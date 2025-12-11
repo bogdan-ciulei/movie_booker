@@ -5,7 +5,7 @@
 
 using boost::asio::ip::tcp;
 
-constexpr char list_message[] = "Hello! Input command(\"list_movies\", \"select_movie <name>\", \"list_theaters\", \"select_theater <name>\", \"book_seat <s1,s2,..>\")\n\n";
+constexpr char list_message[] = "Hello! Input command(\"list_movies\", \"select_movie <name>\", \"list_theaters\", \"select_theater <name>\", \"get_free_seats\", \"book_seat <s1,s2,..>\")\n\n";
 constexpr char invalid_cmd_message[] = "Error! Enter a valid command\n";
 
 tcp_connection::pointer tcp_connection::create(boost::asio::io_context& io_context_, IMovieBooker& booker)
@@ -60,7 +60,8 @@ void tcp_connection::handle_read_end(const boost::system::error_code& error, std
 
 		if (stream >> command)
 		{
-			trim_trailing_cr(command);                      // windows helper
+			trim_trailing(command, '\r');                      // windows helper
+			trim_trailing(command, ' ');                    
 			// transform to lower case
 			std::transform(command.begin(), command.end(), command.begin(),
 				[](unsigned char c) {
@@ -72,13 +73,22 @@ void tcp_connection::handle_read_end(const boost::system::error_code& error, std
 				std::string list;
 				for (auto t : movies)
 					list += t + ",";
+				if (list.empty())
+					list = "No movies running";
 				list += "\n";
 				write_out(list);
 			}
 			else if (command == "select_movie")
 			{
-				if (!(stream >> last_movie) || booker_.GetTheatersForMovie(trim_trailing_cr(last_movie)).empty())
+				stream >> std::ws;				// skip any whitespace in stream
+				std::getline(stream, last_movie);
+				trim_trailing(last_movie, '\r');
+				trim_trailing(last_movie, ' ');
+				if ( booker_.GetTheatersForMovie(last_movie).empty() )
+				{
 					write_out("Error! Select a valid movie\n");
+					last_movie = "";
+				}
 				else
 				{
 					last_theater = "";                  // reset last selected theater
@@ -93,18 +103,48 @@ void tcp_connection::handle_read_end(const boost::system::error_code& error, std
 					std::string list;
 					for (auto t : theaters)
 						list += t + ",";
+					if (list.empty())
+						list = "Movie is not running in any theater";
 					list += "\n";
 					write_out(list);
 				}
 				else
-					write_out("Error! No valid theater selected");
+					write_out("Error! No valid movie selected\n");
 			}
 			else if (command == "select_theater")
 			{
-				if (!(stream >> last_theater) || !booker_.IsTheater(trim_trailing_cr(last_theater)))
+				stream >> std::ws;				// skip any whitespace in stream
+				std::getline(stream, last_theater);
+				trim_trailing(last_theater, '\r');
+				trim_trailing(last_theater, ' ');
+			
+				if (!booker_.IsTheater(last_theater))
+				{
 					write_out("Error! Select a valid theater");
+					last_theater = "";
+				}
 				else
 					write_out("Theater " + last_theater + " selected\n");
+			}
+			else if (command == "get_free_seats")
+			{
+				if (!last_theater.size())
+				{
+					write_out("Error! No valid theater selected\n");
+				}
+				if (!last_movie.size())
+				{
+					write_out("Error! No valid movie selected\n");
+				}
+				else
+				{
+					std::vector<unsigned int> free_seats = booker_.GetFreeSeats(last_theater, last_movie);
+					std::string list;
+					for ( auto seat : free_seats )
+						list += std::to_string(seat) + ",";
+					list += "\n";
+					write_out(list);
+				}
 			}
 			else if (command == "book_seats")
 			{
@@ -112,12 +152,15 @@ void tcp_connection::handle_read_end(const boost::system::error_code& error, std
 				{
 					write_out("Error! No valid theater selected\n");
 				}
+				if (!last_movie.size())
+				{
+					write_out("Error! No valid movie selected\n");
+				}
 				else
 				{
 					int seat = 0;
 					std::vector<unsigned int> seats;
-					stream.ignore(1);	// skip space
-					char c = stream.peek();
+					stream >> std::ws; // skip any whitespace before seats
 					while (stream >> seat)
 					{
 						if (seat < 1 || seat > 20)
@@ -144,7 +187,7 @@ void tcp_connection::handle_read_end(const boost::system::error_code& error, std
 					}
 					else
 					{
-						if (booker_.BookSeats(last_theater, seats))
+						if (booker_.BookSeats(last_theater, last_movie, seats))
 							write_out("Seats booked successfully\n");
 						else
 							write_out("Error! Could not book seats\n");
@@ -175,10 +218,11 @@ void tcp_connection::write_out(const std::string& msg)
 }
 
 // helper on Windows in case carriage return is present before newline
-std::string& tcp_connection::trim_trailing_cr( std::string& str )
+std::string& tcp_connection::trim_trailing( std::string& str , char c)
 {
-	if (!str.empty() && str.back() == '\r')
-		str.pop_back();
+	if ( !str.empty() )
+		while (str.back() == c)
+			str.pop_back();
 	return str;
 }
 

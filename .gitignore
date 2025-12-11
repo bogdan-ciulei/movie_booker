@@ -46,3 +46,6 @@ build/**
 # user files
 *.user
 
+# visual studio
+.vs/**
+*/.vs/**

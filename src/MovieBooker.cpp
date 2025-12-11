@@ -5,122 +5,132 @@
 
 static constexpr std::size_t kSeatsPerTheater = 20;
 
-bool MovieBooker::AddMovie(const std::string& movie, const std::vector<std::string>& theatres) {
+bool MovieBooker::AddMovie(const std::string& movie, const std::vector<std::string>& theatres) 
+{
     if (movie.empty() || theatres.empty()) return false;
 
     std::lock_guard<std::mutex> lock(map_mutex_);
 
-    // ensure movie exists
-    std::size_t movie_id;
-    auto mit = movie_index_.find(movie);
-    if (mit == movie_index_.end()) 
-    {
-        movie_id = movies_.size();
-        movies_.push_back(movie);
-        movie_index_.emplace(movie, movie_id);
-    } else 
-    {
-        movie_id = mit->second;
-    }
+    // ensure movie entry map exists (creates if missing)
+    auto &theater_map = movie_theaters_[movie];
 
     for (const auto &theater : theatres) 
     {
-        // ensure theater exists
-        if (theater_index_.find(theater) == theater_index_.end()) 
+        // ensure theater has an id
+        auto tit = theater_index_.find(theater);
+        if (tit == theater_index_.end()) 
         {
-            std::size_t tid = theaters_.size();
-            theaters_.push_back(theater);
+            std::size_t tid = theater_index_.size();
             theater_index_.emplace(theater, tid);
+            tit = theater_index_.find(theater);
         }
+        std::size_t tid = tit->second;
 
-        auto &entries = theater_movies_[theater];
-        bool exists = false;
-        for (const auto &e : entries) {
-            if (e->movie_id == movie_id) 
-            { 
-                exists = true; 
-                break; 
-            }
-        }
-        if (!exists) {
-            entries.emplace_back(std::make_unique<TheaterMovieEntry>(movie_id, kSeatsPerTheater));
-        }
+        // ensure theater entry for this movie exists
+        auto it = theater_map.find(theater);
+        if (it == theater_map.end()) 
+            theater_map.emplace(theater, std::make_unique<TheaterEntry>(tid, kSeatsPerTheater));
     }
 
     return true;
 }
 
-std::vector<std::string> MovieBooker::GetMovies() {
+std::vector<std::string> MovieBooker::GetMovies() 
+{
     std::lock_guard<std::mutex> lock(map_mutex_);
-    return movies_;
-}
-
-std::vector<std::string> MovieBooker::GetTheatersForMovie(const std::string& movie) {
-    std::lock_guard<std::mutex> lock(map_mutex_);
-    auto mit = movie_index_.find(movie);
-    if (mit == movie_index_.end()) return {};
-    std::size_t mid = mit->second;
-
     std::vector<std::string> result;
-    result.reserve(theater_movies_.size());
-    for (const auto &p : theater_movies_) {
-        const auto &theater = p.first;
-        const auto &entries = p.second;
-        for (const auto &e : entries) {
-            if (e->movie_id == mid) { result.push_back(theater); break; }
-        }
-    }
+    result.reserve(movie_theaters_.size());
+    for (const auto &p : movie_theaters_)
+        result.push_back(p.first);
+   
     return result;
 }
 
-std::vector<unsigned int> MovieBooker::GetFreeSeats(const std::string& theater) {
-    std::unique_lock<std::mutex> mapLock(map_mutex_);
-    auto it = theater_movies_.find(theater);
-    if (it == theater_movies_.end()) return {};
-    auto &entries = it->second;
-    if (entries.empty()) return {};
+std::vector<std::string> MovieBooker::GetTheatersForMovie(const std::string& movie) 
+{
+    std::lock_guard<std::mutex> lock(map_mutex_);
+    auto mit = movie_theaters_.find(movie);
+    if (mit == movie_theaters_.end())
+        return {};                                      // no such movie
 
-    auto &entry = *entries[0];
+    std::vector<std::string> result;
+    result.reserve(mit->second.size());
+    for (const auto &p : mit->second) 
+        result.push_back(p.first);
+    
+    return result;
+}
+
+
+std::vector<unsigned int> MovieBooker::GetFreeSeats(const std::string& theater, const std::string& movie) 
+{
+    if (theater.empty() || movie.empty()) 
+        return {};
+
+    std::unique_lock<std::mutex> mapLock(map_mutex_);
+    auto mit = movie_theaters_.find(movie);
+    if (mit == movie_theaters_.end()) 
+        return {};                                  // movie not found
+
+    auto &theater_map = mit->second;
+    auto it = theater_map.find(theater);
+    if (it == theater_map.end())
+        return {};                                  // theater not showing this movie
+
+    auto &entry = *it->second;
     std::unique_lock<std::mutex> entryLock(entry.mutex);
     mapLock.unlock();
 
     std::vector<unsigned int> freeSeats;
     freeSeats.reserve(entry.seats.size());
-    for (std::size_t i = 0; i < entry.seats.size(); ++i) {
-        if (!entry.seats[i]) freeSeats.push_back(static_cast<unsigned int>(i + 1));
-    }
+    for (std::size_t i = 0; i < entry.seats.size(); ++i) 
+        if (!entry.seats[i])
+            freeSeats.push_back(static_cast<unsigned int>(i + 1));
+    
     return freeSeats;
 }
 
-bool MovieBooker::IsTheater(const std::string& theater) {
+bool MovieBooker::IsTheater(const std::string& theater) 
+{
     std::lock_guard<std::mutex> lock(map_mutex_);
     return theater_index_.find(theater) != theater_index_.end();
 }
 
-bool MovieBooker::BookSeats(const std::string& theater, const std::vector<unsigned int>& seatIds) {
-    if (theater.empty() || seatIds.empty()) return false;
+bool MovieBooker::BookSeats(const std::string& theater, const std::string& movie, const std::vector<unsigned int>& seatIds) 
+{
+    if (theater.empty() || seatIds.empty() || movie.empty()) 
+        return false;
 
     std::set<unsigned int> uniqueIds;
-    for (auto id : seatIds) {
-        if (id == 0 || id > kSeatsPerTheater) return false;
+    for (auto id : seatIds) 
+    {
+        if (id == 0 || id > kSeatsPerTheater)                   // seat number out of range
+            return false;
         uniqueIds.insert(id);
     }
-    if (uniqueIds.size() != seatIds.size()) return false;
+    if (uniqueIds.size() != seatIds.size())                     // seats are not unique
+        return false;
 
     std::unique_lock<std::mutex> mapLock(map_mutex_);
-    auto it = theater_movies_.find(theater);
-    if (it == theater_movies_.end()) return false;
-    auto &entries = it->second;
-    if (entries.empty()) return false;
+    auto mit = movie_theaters_.find(movie);
+    if (mit == movie_theaters_.end()) return false;
 
-    auto &entry = *entries[0];
+    auto &theater_map = mit->second;
+    auto it = theater_map.find(theater);
+    if (it == theater_map.end())                                // theater not found for this movie
+        return false;
+
+    auto &entry = *it->second;
     std::unique_lock<std::mutex> entryLock(entry.mutex);
     mapLock.unlock();
 
-    for (auto id : seatIds) {
+    for (auto id : seatIds) 
+    {
         std::size_t idx = static_cast<std::size_t>(id - 1);
-        if (entry.seats[idx]) return false;
+        if (entry.seats[idx]) 
+            return false;                                       // already booked seat in list
     }
-    for (auto id : seatIds) entry.seats[static_cast<std::size_t>(id - 1)] = true;
+    for (auto id : seatIds) 
+        entry.seats[static_cast<std::size_t>(id - 1)] = true;
     return true;
 }

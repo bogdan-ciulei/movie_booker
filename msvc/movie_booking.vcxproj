@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -62,16 +62,14 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="$(SolutionDir)..\build\x64\Debug\props\conantoolchain.props"/>
-	<Import Project="$(SolutionDir)..\build\x64\Debug\props\conandeps.props"/>
+    <Import Project="$(SolutionDir)..\build\x64\Debug\props\conantoolchain.props" />
+    <Import Project="$(SolutionDir)..\build\x64\Debug\props\conandeps.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(SolutionDir)..\build\x64\Release\props\conantoolchain.props"/>
-	<Import Project="$(SolutionDir)..\build\x64\Release\props\conandeps.props"/>
+    <Import Project="$(SolutionDir)..\build\x64\Release\props\conantoolchain.props" />
+    <Import Project="$(SolutionDir)..\build\x64\Release\props\conandeps.props" />
   </ImportGroup>
-  
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -93,18 +91,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>$(SolutionDir)..\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\build\$(Platform)\$(Configuration)\</OutDir>
+    <TargetName>movie_booker</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(SolutionDir)..\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\build\$(Platform)\$(Configuration)\</OutDir>
+    <TargetName>movie_booker</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)..\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\build\$(Platform)\$(Configuration)\</OutDir>
+    <TargetName>movie_booker</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)..\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\build\$(Platform)\$(Configuration)\</OutDir>
+    <TargetName>movie_booker</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

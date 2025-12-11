@@ -64,7 +64,7 @@ private:
      * @param s String to trim.
      * @return Reference to the trimmed string.
      */
-    static std::string& trim_trailing_cr(std::string&);
+    static std::string& trim_trailing(std::string&, char);
 
     void handle_write_end(const boost::system::error_code&, size_t);
     void handle_read_end(const boost::system::error_code&, size_t);

@@ -1,0 +1,20 @@
+{
+  "movies": [
+    {
+      "title": "Inception",
+      "theaters": ["CinemaOne", "CinemaTwo"]
+    },
+    {
+      "title": "Interstellar",
+      "theaters": ["CinemaTwo", "CinemaThree"]
+    },
+    {
+      "title": "The Matrix",
+      "theaters": ["CinemaOne", "Downtown Cinema"]
+    },
+    {
+      "title": "Toy Story",
+      "theaters": ["Family Theater", "Downtown Cinema"]
+    }
+  ]
+}

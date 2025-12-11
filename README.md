@@ -49,6 +49,9 @@ When built, it will create 3 binaries :
 >		cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release  
 >		cmake --build .  
 		
+3)	Both:
+	Copy movies.json from project root to output folder for testing
+	
 ## Code description  
 
 IMovieBooker.hpp - interface for a bookings manager  
