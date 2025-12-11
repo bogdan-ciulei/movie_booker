@@ -8,24 +8,15 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (MSVC)
-    add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS -D_WIN32_WINNT=0x1000 )
 endif()
 
 # ======================================================================
-# Conan integration
+# Conan packages (CMakeDeps)
 # ======================================================================
-if(EXISTS "${CMAKE_BINARY_DIR}/conan_toolchain.cmake")
-    include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
-endif()
-
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system)
 find_package(RapidJSON REQUIRED)
 find_package(GTest REQUIRED)
-
-# ======================================================================
-# Include path
-# ======================================================================
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # ======================================================================
 # server executable
@@ -36,43 +27,43 @@ add_executable(movie_booker
     src/MovieBooker.cpp
 )
 
+target_include_directories(movie_booker PRIVATE ${PROJECT_SOURCE_DIR}/include)
+
 target_link_libraries(movie_booker
     PRIVATE Boost::boost
-    PRIVATE Boost::system
+    PRIVATE rapidjson
 )
-
-target_include_directories(movie_booker PRIVATE ${RapidJSON_INCLUDE_DIRS})
 
 # ======================================================================
 # client executable
 # ======================================================================
 add_executable(movie_booker_client
-    src/MovieBookerClient.cpp
+    src/movie_booker_client.cpp
     src/AsioClient.cpp
 )
 
+target_include_directories(movie_booker_client PRIVATE ${PROJECT_SOURCE_DIR}/include)
+
 target_link_libraries(movie_booker_client
     PRIVATE Boost::boost
-    PRIVATE Boost::system
 )
-
-target_include_directories(movie_booker_client PRIVATE ${RapidJSON_INCLUDE_DIRS})
 
 # ======================================================================
 # Tests
 # ======================================================================
 add_executable(movie_booker_tests
     tests/tests.cpp
+	src/MovieBooker.cpp
 )
+
+target_include_directories(movie_booker_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
 target_link_libraries(movie_booker_tests
-    PRIVATE GTest::gtest
-    PRIVATE GTest::gtest_main
     PRIVATE Boost::boost
-    PRIVATE Boost::system
+	PRIVATE GTest::gtest
+	PRIVATE GTest::gmock
+    PRIVATE GTest::gtest_main
 )
-
-target_include_directories(movie_booker_tests PRIVATE ${RapidJSON_INCLUDE_DIRS})
 
 include(GoogleTest)
 gtest_discover_tests(movie_booker_tests)
@@ -80,4 +71,4 @@ gtest_discover_tests(movie_booker_tests)
 # ======================================================================
 # Status message
 # ======================================================================
-message(STATUS "Configured server, client, and tests successfully.")
+message(STATUS "Server, client, and tests configured successfully.")

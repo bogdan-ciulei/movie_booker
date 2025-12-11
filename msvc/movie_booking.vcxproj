@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\AsioServer.cpp" />
     <ClCompile Include="..\src\MovieBooker.cpp" />
-    <ClCompile Include="..\src\MoveiBookerrMain.cpp" />
+    <ClCompile Include="..\src\MovieBookerMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\AsioServer.hpp" />

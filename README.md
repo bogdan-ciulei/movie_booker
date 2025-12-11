@@ -29,13 +29,25 @@ When built, it will create 3 binaries :
 
 ## Building:
 1) Windows:  
-   Install Conan 2 Package Manager https://docs.conan.io/2/index.html
-   Install Cmake ( required to build Boost.Asio land gtest ibraries )
-   Copy conanfile.txt from msvc/ to the root of the project ( this will change the build system to MSBuild ).  
-   Run  
+	Install Conan 2 Package Manager https://docs.conan.io/2/index.html
+	Install Cmake ( required to build Boost.Asio and gtest ibraries )
+	You have 2 options :
+	a) Building with Cmake  
+	Run  
+>		mkdir build  
+>		mkdir build\Debug  
+>		conan install . -s build_type=Debug --build=missing -of build\Debug  
+>		cd build\Debug  
+>		cmake ..\.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug  
+>		cmake --build . --config Debug  
+	This will create different paths for debug and release files. Repeat similar for release.  
+	
+	b) Build using Visual Studio  
+	Copy conanfile.txt from msvc/ to the root of the project ( this will change the build system to MSBuild ).  
+	Run  
 >		conan profile detect -f  
-   This should autodetect your system configuration succesfully. If it fails and compilation fails, replace the %USERPROFILE%\.conan\profiles\default with the one from msvc\conan\profiles **making sure to edit everything according to your machine configuration**.  
-   Run  
+	This should autodetect your system configuration succesfully. If it fails and compilation fails, replace the %USERPROFILE%\.conan\profiles\default with the one from msvc\conan\profiles **making sure to edit everything according to your machine configuration**.  
+	Run  
 >		conan install . -s build_type=Debug --build=missing -of build\x64\debug\props  
 >		conan install . -s build_type=Release --build=missing -of build\x64\release\props  
    This will build the dependencies and create the props files that are used by the Visual Studio projects.  
@@ -43,12 +55,14 @@ When built, it will create 3 binaries :
 
 2) Linux:  
    	Use Cmake and Conan 2  
-	Similar steps with Windows except that you don't need to replace any files.  
+	Similar steps with Windows Cmake build.  
 	Run  
->		conan install . --output-folder=build --build=missing  
->		cd build  
->		cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release  
->		cmake --build .  
+>		mkdir build  
+>		mkdir build/Debug  
+>		conan install . -s build_type=Debug --build=missing -of build/Debug  
+>		cd build/Debug  
+>		cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug  
+>		cmake --build . --config Debug 
 		
 3)	Both:
 	Copy movies.json from project root to output folder for testing
