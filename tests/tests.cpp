@@ -1,11 +1,9 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-
-#include "MovieBooker.hpp"
-
 #include <thread>
 #include <atomic>
 #include <algorithm>
+#include <MovieBooker.hpp>
 
 using ::testing::UnorderedElementsAre;
 
