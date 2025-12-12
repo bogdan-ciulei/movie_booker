@@ -80,7 +80,7 @@ void tcp_connection::handle_read_end(const boost::system::error_code& error, std
 			}
 			else if (command == "select_movie")
 			{
-				stream >> std::ws;				// skip any whitespace in stream
+				stream >> std::ws;			// skip any whitespace in stream
 				std::getline(stream, last_movie);
 				trim_trailing(last_movie, '\r');
 				trim_trailing(last_movie, ' ');
@@ -113,7 +113,7 @@ void tcp_connection::handle_read_end(const boost::system::error_code& error, std
 			}
 			else if (command == "select_theater")
 			{
-				stream >> std::ws;				// skip any whitespace in stream
+				stream >> std::ws;			// skip any whitespace in stream
 				std::getline(stream, last_theater);
 				trim_trailing(last_theater, '\r');
 				trim_trailing(last_theater, ' ');
@@ -128,13 +128,13 @@ void tcp_connection::handle_read_end(const boost::system::error_code& error, std
 			}
 			else if (command == "get_free_seats")
 			{
-				if (!last_theater.size())
-				{
-					write_out("Error! No valid theater selected\n");
-				}
 				if (!last_movie.size())
 				{
 					write_out("Error! No valid movie selected\n");
+				}
+				else if (!last_theater.size())
+				{
+					write_out("Error! No valid theater selected\n");
 				}
 				else
 				{
@@ -188,14 +188,14 @@ void tcp_connection::handle_read_end(const boost::system::error_code& error, std
 					else
 					{
 						if (booker_.BookSeats(last_theater, last_movie, seats))
-							write_out("Seats booked successfully\n");
+						 write_out("Seats booked successfully\n");
 						else
-							write_out("Error! Could not book seats\n");
+						 write_out("Error! Could not book seats\n");
 					}
 				}
 			}
 			else
-				write_out(invalid_cmd_message);
+			 write_out(invalid_cmd_message);
 		}
 		else
 		{
@@ -228,11 +228,16 @@ std::string& tcp_connection::trim_trailing( std::string& str , char c)
 
 
 
-
-
-
-AsioServer::AsioServer(IMovieBooker& booker) : booker_(booker), acceptor(io_context_, tcp::endpoint(tcp::v4(), 8080)), run_once(false)
-{}
+AsioServer::AsioServer(IMovieBooker& booker, unsigned short port) : booker_(booker), acceptor(io_context_), run_once(false), port_(port)
+{
+    // bind to the requested port (0 -> ephemeral)
+    acceptor.open(tcp::v4());
+    acceptor.set_option(boost::asio::socket_base::reuse_address(true));
+    acceptor.bind(tcp::endpoint(tcp::v4(), port_));
+    // update port_ in case ephemeral port was requested (port == 0)
+    port_ = acceptor.local_endpoint().port();
+    acceptor.listen();
+}
 
 AsioServer::~AsioServer()
 {
@@ -272,4 +277,9 @@ void AsioServer::Run()
 void AsioServer::Stop()
 {
     io_context_.stop();
+}
+
+unsigned short AsioServer::GetPort() const
+{
+    return port_;
 }

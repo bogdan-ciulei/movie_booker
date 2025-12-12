@@ -49,3 +49,6 @@ build/**
 # visual studio
 .vs/**
 */.vs/**
+
+#intermediate dirs
+msvc/*/*

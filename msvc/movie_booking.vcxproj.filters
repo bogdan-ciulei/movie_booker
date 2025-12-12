@@ -24,6 +24,9 @@
     <ClCompile Include="..\src\AsioServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tests\AsioServer_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\IMovieBooker.hpp">

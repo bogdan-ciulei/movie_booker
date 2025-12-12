@@ -76,6 +76,7 @@ private:
 };
 
 
+
 /**
  * @class AsioServer
  * @brief TCP server that accepts client connections and delegates commands to an IMovieBooker.
@@ -91,8 +92,9 @@ public:
     /**
      * @brief Construct the server.
      * @param booker Reference to an IMovieBooker used to service requests.
+     * @param port TCP port to bind the server on (default 8080). Use 0 to pick an ephemeral port.
      */
-    AsioServer(IMovieBooker &booker);
+    AsioServer(IMovieBooker &booker, unsigned short port = 8080);
 
     ~AsioServer();
 
@@ -106,6 +108,11 @@ public:
      */
     void Stop();
 
+    /**
+     * @brief Return the port the server is bound to.
+     */
+    unsigned short GetPort() const;
+
 private:
     void start_accept();
     void handle_accept(tcp_connection::pointer new_connection, const boost::system::error_code& error);
@@ -115,6 +122,7 @@ private:
     boost::asio::ip::tcp::acceptor acceptor;
     IMovieBooker& booker_;
     bool run_once;
+    unsigned short port_; // bound port
 };
 
 

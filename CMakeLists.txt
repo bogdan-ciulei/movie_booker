@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (MSVC)
-    add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS -D_WIN32_WINNT=0x1000 )
+    add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS -D_WIN32_WINNT=0x1000 -D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING )
 endif()
 
 # ======================================================================
@@ -54,6 +54,8 @@ target_link_libraries(movie_booker_client
 add_executable(movie_booker_tests
     tests/tests.cpp
 	src/MovieBooker.cpp
+	src/AsioServer.cpp
+	src/AsioServer_tests.cpp
 )
 
 target_include_directories(movie_booker_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)

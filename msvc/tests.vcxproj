@@ -19,8 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\AsioServer.cpp" />
     <ClCompile Include="..\src\MovieBooker.cpp" />
+    <ClCompile Include="..\tests\AsioServer_tests.cpp" />
     <ClCompile Include="..\tests\tests.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\AsioServer.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

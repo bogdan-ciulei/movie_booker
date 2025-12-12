@@ -34,17 +34,18 @@ Install Cmake ( required to build Boost.Asio and gtest ibraries ).
 You have 2 options:  
 a) Building with Cmake  
 Run  
+>		conan profile detect -f  
 >		mkdir build  
 >		mkdir build\Debug  
 >		conan install . -s build_type=Debug --build=missing -of build\Debug  
 >		cd build\Debug  
->		cmake ..\.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug  
+>		cmake ..\.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_RUNTIME_OUTPUT_DIRECTORY="..\\" 
 >		cmake --build . --config Debug  
 
 This will create different paths for debug and release files. Repeat similar for release.  
 	
 b) Build using Visual Studio  
-Copy conanfile.txt from msvc/ to the root of the project ( this will change the build system to MSBuild ).  
+Copy conanfile.txt from msvc/ to the root of the project ( this will change the build system to MSBuildDeps to generate props files ).  
 Run  
 >		conan profile detect -f  
 This should autodetect your system configuration succesfully. If it fails and compilation fails, replace the %USERPROFILE%\ .conan\profiles\default with the one from msvc\conan\profiles **making sure to edit everything according to your machine configuration**.  
@@ -58,12 +59,15 @@ Now you can use movie_booking.sln from the msvc folder.
 Use Cmake and Conan 2  
 Similar steps with Windows Cmake build.  
 Run  
+>		conan profile detect -f  
 >		mkdir build  
 >		mkdir build/Debug  
 >		conan install . -s build_type=Debug --build=missing -of build/Debug  
 >		cd build/Debug  
 >		cmake ../.. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Debug  
 >		cmake --build . --config Debug 
+
+Similar for release.  
 		
 3)	Both:  
 Copy movies.json from project root to output folder for testing

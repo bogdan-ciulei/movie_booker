@@ -22,6 +22,7 @@
     <ClCompile Include="..\src\AsioServer.cpp" />
     <ClCompile Include="..\src\MovieBooker.cpp" />
     <ClCompile Include="..\src\MovieBookerMain.cpp" />
+    <ClCompile Include="tests\AsioServer_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\AsioServer.hpp" />
@@ -140,7 +141,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
