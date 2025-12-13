@@ -33,6 +33,10 @@ target_link_libraries(movie_booker
     PRIVATE Boost::boost
     PRIVATE rapidjson
 )
+target_compile_options(movie_booker PRIVATE
+        -fpermissive
+        -Wno-error
+)
 
 # ======================================================================
 # client executable
@@ -55,7 +59,8 @@ add_executable(movie_booker_tests
     tests/tests.cpp
 	src/MovieBooker.cpp
 	src/AsioServer.cpp
-	src/AsioServer_tests.cpp
+	tests/AsioServer_tests.cpp
+
 )
 
 target_include_directories(movie_booker_tests PRIVATE ${PROJECT_SOURCE_DIR}/include)
