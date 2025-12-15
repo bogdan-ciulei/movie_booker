@@ -71,7 +71,14 @@ Similar for release.
 		
 3)	Both:  
 Copy movies.json from project root to output folder for testing
-	
+
+## Docker
+
+Asumming Docker is properly set up, run  
+>		docker compose up	
+from within the repo
+
+
 ## Code description  
 
 IMovieBooker.hpp - interface for a bookings manager  

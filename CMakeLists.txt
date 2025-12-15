@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 project(MovieBookingBackend LANGUAGES CXX)
 
+enable_testing()
+
 # ======================================================================
 # C++ standard
 # ======================================================================

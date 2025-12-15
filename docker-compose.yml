@@ -1,0 +1,6 @@
+services:
+  movie_booker:
+    build: .
+    ports:
+      - "8080:8080"
+    command: ["./movie_booker"]
